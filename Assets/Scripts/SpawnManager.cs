@@ -162,7 +162,7 @@ public class SpawnManager : MonoBehaviour
         int shipGenNum = Random.Range(Mathf.Max(spawnEvent.shipNum - spawnEvent.offset, 0), spawnEvent.shipNum + spawnEvent.offset);
         Vector3 spawnDirectionEuler = new Vector3(0f, Random.Range(0f, 2 * 3.14f), 0f);
 
-        float mapScale = GameObject.Find("MapManager").GetComponent<MapManger>().mapScale;
+        float mapScale = GameObject.Find("MapManager").GetComponent<MapManger>().curMapScale;
         Vector3 spawnPosition = new Vector3(Random.Range(-4f * mapScale, 4f* mapScale), 0f, Random.Range(-4f* mapScale, 4f* mapScale));
 
         //规避黑洞生成

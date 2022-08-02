@@ -81,6 +81,7 @@ public class AudioController : MonoBehaviour
         {
             currentPlayingClip = soundClip;
             audioSource.clip = soundClip.clip;
+            audioSource.volume = soundClip.volume;
             audioSource.Play();
         }
     }

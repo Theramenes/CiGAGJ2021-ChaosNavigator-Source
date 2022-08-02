@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clip: {fileID: 8300000, guid: 964fafbf4fce1b949b0d6fb66d71d650, type: 3}
   clipName: BGM_Normal
-  volume: 1
-  pitch: 2.2255158
+  volume: 0.49
+  pitch: 1

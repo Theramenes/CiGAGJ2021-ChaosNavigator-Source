@@ -6,38 +6,48 @@ using Cinemachine;
 public class MapManger : MonoBehaviour
 {
 
-    public GameObject ground;
+    public GameObject GamePlane;
     public CinemachineVirtualCamera vCamera;
 
-    public float mapScale;
+    [Header("Map Data")]
+    public MapDataSO InitialMapData;
+    public MapDataSO FinalMapData;
+
+    public float curMapScale;
+    [SerializeField]
+    private float targetMapScale;
+
     public float targetScale;
     public float lerpStep;
 
-    public float cameraField;
+    [SerializeField]
+    public float curCameraFiled;
+
     public float textScale;
     public Material material;
+
+    private void Awake()
+    {
+        Initialize();
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        mapScale = 1f;
-        cameraField = vCamera.m_Lens.OrthographicSize;
 
-        material = ground.GetComponent<MeshRenderer>().material;
-        
-        textScale = material.GetFloat("_Scale");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (mapScale < targetScale)
+        if (curMapScale < targetScale)
         {
-            mapScale += lerpStep * Time.deltaTime;
-            //ground.transform.localScale = new Vector3(mapScale, mapScale, mapScale);
+            curMapScale += lerpStep * Time.deltaTime;
+            GamePlane.transform.localScale = new Vector3(curMapScale, curMapScale, curMapScale);
 
-            vCamera.m_Lens.OrthographicSize = 0.8f * cameraField * mapScale;
-            material.SetFloat("_Scale", textScale / mapScale);
+            //vCamera.m_Lens.OrthographicSize = 0.8f * curCameraFiled * curMapScale;
+            vCamera.m_Lens.OrthographicSize = curCameraFiled * curMapScale;
+            material.SetFloat("_Scale", textScale / curMapScale);
         }
     }
 
@@ -48,6 +58,24 @@ public class MapManger : MonoBehaviour
 
     public Vector4 getEdge()
     {
-        return new Vector4(5 * mapScale, -5 * mapScale, -5 * mapScale, 5 * mapScale);
+        return new Vector4(5 * curMapScale, -5 * curMapScale, -5 * curMapScale, 5 * curMapScale);
+    }
+
+    public void GetMapScalingRate()
+    {
+
+    }
+
+    private void Initialize()
+    {
+        InitialMapData.Initialize();
+
+        curMapScale = InitialMapData.MapScale;
+        curCameraFiled = InitialMapData.CameraOrthographicSize;
+        material = GamePlane.GetComponent<MeshRenderer>().material;
+        textScale = material.GetFloat("_Scale");
+
+        vCamera.m_Lens.OrthographicSize = curCameraFiled;
+        GamePlane.transform.localScale = new Vector3(curMapScale, curMapScale, curMapScale);
     }
 }

@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cabdbfd53d1776745be7e806844776a0, type: 3}
+  m_Name: Initial Map Data
+  m_EditorClassIdentifier: 
+  InitialMapScale: 1
+  FinalMapScale: 3
+  MapScale: 1
+  MapEdgeLength: 5
+  CameraOrthographicSize: 4
+  MapVertices:
+  - {x: 5, y: 5}
+  - {x: 5, y: -5}
+  - {x: -5, y: -5}
+  - {x: -5, y: 5}
+  AircraftSpawnArea:
+  - LDCornerVertice: {x: -2.5, y: 0, z: 7.5}
+    RTCornerVertice: {x: 2.5, y: 0, z: 10}
+  - LDCornerVertice: {x: 7.5, y: 0, z: -2.5}
+    RTCornerVertice: {x: 10, y: 0, z: 2.5}
+  - LDCornerVertice: {x: -2.5, y: 0, z: -10}
+    RTCornerVertice: {x: 2.5, y: 0, z: -7.5}
+  - LDCornerVertice: {x: -10, y: 0, z: -2.5}
+    RTCornerVertice: {x: -7.5, y: 0, z: 2.5}
+  StationSpawnArea:
+  - LDCornerVertice: {x: 0, y: 0, z: 0}
+    RTCornerVertice: {x: 5, y: 0, z: 5}
+  - LDCornerVertice: {x: 0, y: 0, z: -5}
+    RTCornerVertice: {x: 5, y: 0, z: 0}
+  - LDCornerVertice: {x: -5, y: 0, z: -5}
+    RTCornerVertice: {x: 0, y: 0, z: 0}
+  - LDCornerVertice: {x: -5, y: 0, z: 0}
+    RTCornerVertice: {x: 0, y: 0, z: 5}
