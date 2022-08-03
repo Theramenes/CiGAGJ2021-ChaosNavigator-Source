@@ -6,8 +6,8 @@ public class GameManager : MonoBehaviour
 {
 
     public int gameState;
-    public GameObject SpawnManager;
-    public GameObject MapManager;
+    public SpawnManager SpawnManager;
+    public MapManager MapManager;
 
     public float gameTime;
     public float timeScaleRate;
@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Initialize();
         gameTime = 0f;
     }
 
@@ -26,7 +27,16 @@ public class GameManager : MonoBehaviour
     {
         gameTime += Time.deltaTime;
 
-        if (gameTime < maxTime)
-            MapManager.GetComponent<MapManger>().setTargetScale(1 + timeScaleRate * ((int)gameTime) / stateTimeClip);
+        MapManager.DoMapScale(gameTime);
+
+        //if (gameTime < maxTime)
+        //    MapManager.GetComponent<MapManger>().setTargetScale(1 + timeScaleRate * ((int)gameTime) / stateTimeClip);
+    }
+
+    private void Initialize()
+    {
+        gameTime = 0f;
+
+
     }
 }

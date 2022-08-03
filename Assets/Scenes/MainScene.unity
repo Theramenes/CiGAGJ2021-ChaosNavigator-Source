@@ -666,11 +666,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 380695665265672746, guid: f414fed364aa70c458555bdb50a16c4a, type: 3}
   m_PrefabInstance: {fileID: 380695666146859242}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1054473168 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5108868039496373030, guid: bee4cc535db39b44b904897dde671376, type: 3}
+--- !u!114 &1054473169 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5108868039496373031, guid: bee4cc535db39b44b904897dde671376, type: 3}
   m_PrefabInstance: {fileID: 8808446028932677866}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65d12cde937be2347a2d874050d7af59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1059484718
 GameObject:
   m_ObjectHideFlags: 0
@@ -710,14 +716,14 @@ MonoBehaviour:
   m_Follow: {fileID: 0}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 4.243952
+    OrthographicSize: 7.19343
     NearClipPlane: 0.3
     FarClipPlane: 10000000
     Dutch: 0
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7781457, y: 1}
+    m_SensorSize: {x: 1.7751065, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -884,8 +890,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameState: 0
-  SpawnManager: {fileID: 1054473168}
-  MapManager: {fileID: 1212102700}
+  SpawnManager: {fileID: 1054473169}
+  MapManager: {fileID: 1212102701}
   gameTime: 0
   timeScaleRate: 0.2
   stateTimeClip: 20
@@ -1026,7 +1032,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GamePlane: {fileID: 942023611}
   vCamera: {fileID: 1059484719}
-  InitialMapData: {fileID: 11400000, guid: 38ce7a07700ba294bad5c4aadff19c6b, type: 2}
+  MapData: {fileID: 11400000, guid: 38ce7a07700ba294bad5c4aadff19c6b, type: 2}
   FinalMapData: {fileID: 0}
   curMapScale: 0
   targetMapScale: 0
@@ -1957,7 +1963,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 380695665265672789, guid: f414fed364aa70c458555bdb50a16c4a, type: 3}
       propertyPath: orthographic size
-      value: 4.243952
+      value: 7.19343
       objectReference: {fileID: 0}
     - target: {fileID: 380695665265672791, guid: f414fed364aa70c458555bdb50a16c4a, type: 3}
       propertyPath: m_Name

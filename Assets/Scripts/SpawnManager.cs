@@ -6,11 +6,15 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
+    private MapManager MapManager;
+
     //生成事件列表
     public SpawnEventSetSO spawnEventList;
     //0:ship
     //1:target
     //2:meteor
+
+
     private string[] typeStrings = { "Ship", "Target", "Meteor" };
 
     public int[] totalNum = { 0, 0, 0 };
@@ -20,6 +24,29 @@ public class SpawnManager : MonoBehaviour
 
     public IntVariableSO currentScore;
     public IntReference maxTarget;
+
+    [Header("Spawn Objects Data")]
+    public SpawnObjectsDataSO SpawnObjectsData;
+    //[SerializeField
+    //[SerializeField]
+
+    // 用于Gizmos 记录生成点和方向
+    [Header("Gizmos Draw Data")]
+    [SerializeField]
+    private int maxQueueSize = 10;
+
+    [SerializeField]
+    private Queue<Vector3> AircraftSpawnPoint = new Queue<Vector3>();
+    [SerializeField]
+    private Queue<Vector3> AircraftDirection = new Queue<Vector3>();
+
+    private IEnumerator<Vector3> spawnPointEnumerator;
+    private IEnumerator<Vector3> directionEnumerator;
+
+    private void Awake()
+    {
+        Initialize();
+    }
 
     private void Update()
     {
@@ -159,15 +186,46 @@ public class SpawnManager : MonoBehaviour
         Debug.Log("Spawn Event " + index);
         //进行index号事件的随机生成
         SpawnEventSO spawnEvent = spawnEventList.Items[index];
+
+
+        GameObject bH = GameObject.Find("BlackHole");
+
+        Vector3 blackHolePos = bH.transform.position;
+        Vector3 spawnPosition;
+        int spawnArea;
+
+        if (spawnEvent.shipType == 1)
+        {
+            int bhArea = MapManager.GetPointCurrentArea(blackHolePos);
+            spawnArea = Random.Range((bhArea + 1) % 4, (bhArea + 3) % 4);
+            spawnPosition = MapManager.GetStationSpawnPoint(spawnArea);
+
+            SpawnStaticObject(spawnEvent.shipType, spawnPosition);
+            return;
+        }
+
         int shipGenNum = Random.Range(Mathf.Max(spawnEvent.shipNum - spawnEvent.offset, 0), spawnEvent.shipNum + spawnEvent.offset);
         Vector3 spawnDirectionEuler = new Vector3(0f, Random.Range(0f, 2 * 3.14f), 0f);
 
-        float mapScale = GameObject.Find("MapManager").GetComponent<MapManger>().curMapScale;
-        Vector3 spawnPosition = new Vector3(Random.Range(-4f * mapScale, 4f* mapScale), 0f, Random.Range(-4f* mapScale, 4f* mapScale));
+        // 飞船生成点
+        float mapScale = MapManager.MapData.MapScale;
+        //Vector3 spawnPosition = new Vector3(Random.Range(-4f * mapScale, 4f* mapScale), 0f, Random.Range(-4f* mapScale, 4f* mapScale));
+        int airCraftSpawnArea = Random.Range(0, 4);
+        spawnPosition = MapManager.GetAircraftSpawnPoint(airCraftSpawnArea);
+
+        Debug.Log("Spawn Info : Spawning aircrafts in " + spawnPosition + " in area " + airCraftSpawnArea + "\n");
+
+        // 飞船初始方向生成
+        int directArea = Random.Range((airCraftSpawnArea + 1) % 4, (airCraftSpawnArea + 3) % 4);
+
+        Debug.Log("Spawn Info : Spawning aircrafts directing area " + directArea + "\n");
+
+        Vector3 targetPoint = MapManager.GetAircraftSpawnPoint(directArea);
+        Vector3 direction = (targetPoint - spawnPosition).normalized;
+
+        Debug.Log("Spawn Info : Spawning aircrafts direction " + direction + "\n");
 
         //规避黑洞生成
-        GameObject bH = GameObject.Find("BlackHole");
-        Vector3 blackHolePos = bH.transform.position;
         Vector3 awayFromHole = spawnPosition - blackHolePos;
         awayFromHole = awayFromHole * Mathf.Max(0f, 1.5f * bH.GetComponent<BlackHoleController>().crashRadius - awayFromHole.magnitude);
         spawnPosition += awayFromHole;
@@ -179,7 +237,8 @@ public class SpawnManager : MonoBehaviour
             //default direction
             Vector3 finalSpawnPosition = spawnPosition + RotateRound(spawnEvent.initPos[i].Value, new Vector3(0f, 0f, 0f), new Vector3(0f, 1f, 0f), spawnDirectionEuler[1]);
 
-            SpawnObject(spawnEvent.shipType.Value, spawnEvent.speed.Value, finalSpawnPosition, finalSpawnDirectionEuler);
+            SpawnObject(spawnEvent.shipType.Value, spawnEvent.speed.Value, finalSpawnPosition, direction);
+            //SpawnObject(spawnEvent.shipType.Value, spawnEvent.speed.Value, finalSpawnPosition, finalSpawnDirectionEuler);
         }
     }
 
@@ -188,6 +247,19 @@ public class SpawnManager : MonoBehaviour
         Vector3 point = Quaternion.AngleAxis(angle, axis) * (position - center);
         Vector3 resultVec3 = center + point;
         return resultVec3;
+    }
+
+    public void SpawnStaticObject(int type, Vector3 pos)
+    {
+        GameObject stationObj = Instantiate(Resources.Load<GameObject>("StationPrefab"));
+        stationObj.transform.parent = GameObject.Find("---<< Stations >>---").transform;
+        stationObj.transform.position = pos;
+
+        SpaceStation newStation = stationObj.GetComponent<SpaceStation>();
+        newStation.currentScore = currentScore;
+        newStation.capacity = 5;
+
+        UpdateSpawnObjectData(type, 1);
     }
 
     private void SpawnObject(int type, float speed, Vector3 pos, Vector3 direction)
@@ -202,7 +274,8 @@ public class SpawnManager : MonoBehaviour
             shipObj.transform.position = pos;
 
             Aircraft newAircraft = shipObj.GetComponent<Aircraft>();
-            newAircraft.direction = new Vector3(Mathf.Cos(direction[1]), 0, Mathf.Sin(direction[1]));
+            //newAircraft.direction = new Vector3(Mathf.Cos(direction[1]), 0, Mathf.Sin(direction[1]));
+            newAircraft.direction = direction;
             newAircraft.origenalSpeed = (Random.Range(-0.2f, 0.2f) + 1) + speed;  //random speed
 
             //newAircraft.top = GameObject.Find("Top").transform;
@@ -214,20 +287,22 @@ public class SpawnManager : MonoBehaviour
 
             newAircraft.type = "Ship";
             shipObj.tag = "Ship";
-        }
-        else if (type == 1)
-        {
-            if (totalNum[1] < maxTarget)
-            {
-                GameObject stationObj = Instantiate(Resources.Load<GameObject>("StationPrefab"));
-                stationObj.transform.parent = GameObject.Find("---<< Stations >>---").transform;
-                stationObj.transform.position = pos;
 
-                SpaceStation newStation = stationObj.GetComponent<SpaceStation>();
-                newStation.currentScore = currentScore;
-                newStation.capacity = 5;
-            }
+            AddSpawnDataToQueue(pos, direction);
         }
+        //else if (type == 1)
+        //{
+        //    if (totalNum[1] < maxTarget)
+        //    {
+        //        GameObject stationObj = Instantiate(Resources.Load<GameObject>("StationPrefab"));
+        //        stationObj.transform.parent = GameObject.Find("---<< Stations >>---").transform;
+        //        stationObj.transform.position = pos;
+
+        //        SpaceStation newStation = stationObj.GetComponent<SpaceStation>();
+        //        newStation.currentScore = currentScore;
+        //        newStation.capacity = 5;
+        //    }
+        //}
         else if (type == 2)
         {
             GameObject meteorObj = Instantiate(Resources.Load<GameObject>("MeteorPrefab"));
@@ -249,8 +324,73 @@ public class SpawnManager : MonoBehaviour
             meteorObj.tag = "Meteor";
         }
 
+        UpdateSpawnObjectData(type, 1);
 
         Debug.Log("Generated type "+ typeStrings[type]);
         //totalNum[type]++;
+    }
+
+    public void UpdateSpawnObjectData(int type, int offset)
+    {
+        switch (type)
+        {
+            case 0:
+                SpawnObjectsData.AircraftCount += offset;
+                break;
+            case 1:
+                SpawnObjectsData.StationCount += offset;
+                break;
+            case 2:
+                SpawnObjectsData.MetoerCount += offset;
+                break;
+            default:
+                break;
+        }
+
+    }
+
+
+    private void AddSpawnDataToQueue(Vector3 spawnPoint, Vector3 direction)
+    {
+        if(AircraftSpawnPoint.Count < maxQueueSize)
+        {
+            AircraftSpawnPoint.Enqueue(spawnPoint);
+            AircraftDirection.Enqueue(direction);
+            return;
+        }
+
+        AircraftSpawnPoint.Dequeue();
+        AircraftSpawnPoint.Enqueue(spawnPoint);
+        AircraftDirection.Dequeue();
+        AircraftDirection.Enqueue(direction);
+    }
+
+    private void Initialize()
+    {
+        MapManager = GameObject.Find("MapManager").GetComponent<MapManager>();
+        InitGameTimer();
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (AircraftDirection.Count == 0)
+            return;
+
+        spawnPointEnumerator = AircraftSpawnPoint.GetEnumerator();
+        directionEnumerator = AircraftDirection.GetEnumerator();
+
+        spawnPointEnumerator.Reset();
+        directionEnumerator.Reset();
+
+        while (spawnPointEnumerator.MoveNext() && directionEnumerator.MoveNext())
+        {
+            // spawn point
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(spawnPointEnumerator.Current, 0.1f);
+
+            // direction
+            Gizmos.color = Color.green;
+            Gizmos.DrawRay(spawnPointEnumerator.Current, directionEnumerator.Current);
+        }
     }
 }

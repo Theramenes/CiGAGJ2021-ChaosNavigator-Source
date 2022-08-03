@@ -8,6 +8,7 @@ using UnityEngine;
 public class BlackHoleController : MonoBehaviour
 {
     // Start is called before the first frame update
+    private MapManager MapManager;
 
     //init position
     public Vector3 spawnPosition = new Vector3(0f, 0f, 0f);
@@ -28,6 +29,11 @@ public class BlackHoleController : MonoBehaviour
 
     //which player? which input?
     public int playerNum = 1;
+
+    private void Awake()
+    {
+        Initialize();   
+    }
 
     void Start()
     {
@@ -63,10 +69,15 @@ public class BlackHoleController : MonoBehaviour
         Vector3 pos = this.transform.position;
         Vector3 posDestination = pos + posDelta;
 
-        Vector4 edge = GameObject.Find("MapManager").GetComponent<MapManger>().getEdge();
+        Vector4 edge = GameObject.Find("MapManager").GetComponent<MapManager>().getEdge();
 
         float deltaX = translationVertical;
         float deltaZ = translationHorizontal;
+        
+        if(!MapManager.IsBlackHoleInMoveArea(posDestination))
+        {
+            
+        }
         if (posDestination.x + GetCrashRadius() >= edge.w && deltaX > 0)
         {
             deltaX = 0f;
@@ -190,4 +201,8 @@ public class BlackHoleController : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, gravityRadius);
     }
 
+    private void Initialize()
+    {
+        MapManager = GameObject.Find("MapManager").GetComponent<MapManager>();
+    }
 }

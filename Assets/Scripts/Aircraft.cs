@@ -41,6 +41,7 @@ public class Aircraft : MonoBehaviour
 
     private bool isCrashed;
     private bool isCatched;
+    private bool isJustSpawned;
     private string crashTarget;
 
     public int meteorMassMultiple;
@@ -52,6 +53,7 @@ public class Aircraft : MonoBehaviour
         acceleration = Vector3.zero;
         speed = origenalSpeed;
         isCrashed = false;
+        isJustSpawned = true;
 
         if (!gameObject.GetComponent<SphereCollider>())
             gameObject.AddComponent<SphereCollider>();
@@ -111,40 +113,10 @@ public class Aircraft : MonoBehaviour
             }
         }
 
-
-
         // edge test
-        Vector3 pos = this.transform.position;
-        TrailRenderer tr = this.GetComponentInChildren<TrailRenderer>();
-        if (tr.enabled == false) { tr.enabled = true; }
+        TestAircraftCrossEdge();
 
-        edge = GameObject.Find("MapManager").GetComponent<MapManger>().getEdge();
-        if (pos.x >= edge.w)
-        {
-            tr.Clear();
-            tr.enabled = false;
-            this.transform.position = new Vector3(edge.z, pos.y, pos.z);
-        }
-        if (pos.x <= edge.z)
-        {
-            tr.Clear();
-            tr.enabled = false;
-            this.transform.position = new Vector3(edge.w, pos.y, pos.z);
-        }
-        if (pos.z >= edge.x)
-        {
-            tr.Clear();
-            tr.enabled = false;
-            this.transform.position = new Vector3(pos.x, pos.y, edge.y);
-        }
-        if (pos.z <= edge.y)
-        {
-            tr.Clear();
-            tr.enabled = false;
-            this.transform.position = new Vector3(pos.x, pos.y, edge.x);
-        }
-
-        // Physics Test
+                // Physics Test
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius);
         foreach (var hitCollider in hitColliders)
         {
@@ -207,6 +179,58 @@ public class Aircraft : MonoBehaviour
         }
         OnCollideWithBlackHoleEvent.Invoke();
         isCrashed = true;
+    }
+
+    public void TestAircraftCrossEdge()
+    {
+
+        Vector3 pos = this.transform.position;
+        float mapEdgeRadius = GameObject.Find("MapManager").GetComponent<MapManager>().GetMapEdgeRadius();
+        float distanceAircraftToOrigin = Vector3.Distance(pos, new Vector3(0, 0, 0));
+
+        TrailRenderer tr = this.GetComponentInChildren<TrailRenderer>();
+        if (tr.enabled == false) { tr.enabled = true; }
+
+
+        if (distanceAircraftToOrigin >= mapEdgeRadius)
+        {
+            if(isJustSpawned)
+            {
+                isJustSpawned = false;
+                return;
+            }
+            tr.Clear();
+            tr.enabled = false;
+
+            this.transform.position = new Vector3(-pos.x, -pos.y, -pos.z);
+        }
+
+        //edge = GameObject.Find("MapManager").GetComponent<MapManger>().getEdge();
+        //if (pos.x >= edge.w)
+        //{
+        //    tr.Clear();
+        //    tr.enabled = false;
+        //    this.transform.position = new Vector3(edge.z, pos.y, pos.z);
+        //}
+        //if (pos.x <= edge.z)
+        //{
+        //    tr.Clear();
+        //    tr.enabled = false;
+        //    this.transform.position = new Vector3(edge.w, pos.y, pos.z);
+        //}
+        //if (pos.z >= edge.x)
+        //{
+        //    tr.Clear();
+        //    tr.enabled = false;
+        //    this.transform.position = new Vector3(pos.x, pos.y, edge.y);
+        //}
+        //if (pos.z <= edge.y)
+        //{
+        //    tr.Clear();
+        //    tr.enabled = false;
+        //    this.transform.position = new Vector3(pos.x, pos.y, edge.x);
+        //}
+
     }
 
     public void OnParkInStation()

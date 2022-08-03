@@ -6,30 +6,100 @@ using UnityEngine;
 public class MapDataSO : ScriptableObject
 {
     public float InitialMapScale = 1f;
-    public float FinalMapScale = 3f;
-
 
     public float MapScale;
     public float MapEdgeLength;
 
     // 摄像机可见范围，用于配合地图范围的变化
+    [SerializeField]
+    private float InitialCameraOrthographicSize = 4f;
     public float CameraOrthographicSize;
 
+
+    [Header("")]
     public List<Vector2> MapVertices;
+
+    [Header("Map Area Data")]
+    [SerializeField]
+    public Area BlackHoleMoveArea;
+
     [SerializeField]
     public List<Area> AircraftSpawnArea;
 
     [SerializeField]
     public List<Area> StationSpawnArea;
 
+    [Header("Map Scaling Data")]
+    public List<MapScalingData> MapScalingDataList;
+    [SerializeField]
+    private int mapScalingStage;
+
+    [Header("Map Scaling Animation Data")]
+    public AnimationCurve CameraFieldCurve;
+    public float CameraFieldAnimatDuration;
+    public AnimationCurve MapScalingCurve;
+    public float MapScalingAnimatDuration;
+
 
     public void Initialize()
     {
         MapScale = InitialMapScale;
+        CameraOrthographicSize = InitialCameraOrthographicSize;
+
         MapEdgeLength = MapScale * 5f;
+        mapScalingStage = 0;
 
         UpdateAircraftSpawnArea();
         UpdateStationSpawnArea();
+    }
+
+    public void MapScaling(float gameTime)
+    {
+        if (mapScalingStage == MapScalingDataList.Count - 1)
+            return;
+
+        if(MapScalingDataList[mapScalingStage+1].gameTime < gameTime)
+        {
+            mapScalingStage++;
+            UpdateMapData();
+            UpdateBlackHoleMoveArea();
+            UpdateAircraftSpawnArea();
+            UpdateStationSpawnArea();
+        }
+
+        //if (mapScalingStage < MapScalingDataList.Count)
+        //{
+
+        //}
+    }
+
+    public bool CanDoMapScaling(float gameTime)
+    {
+        if (mapScalingStage == MapScalingDataList.Count - 1)
+            return false;
+
+        return MapScalingDataList[mapScalingStage + 1].gameTime <= gameTime;
+    
+    }
+
+    public Vector3 GetAircraftSpawnPoint(int area)
+    {
+        return AircraftSpawnArea[area].GetRandomPointInArea();
+    }
+
+
+
+    public void UpdateMapData()
+    {
+        MapScale = MapScalingDataList[mapScalingStage].mapScale;
+        MapEdgeLength = MapScale * 5f;
+        CameraOrthographicSize = InitialCameraOrthographicSize * MapScale;
+    }
+
+    public void UpdateBlackHoleMoveArea()
+    {
+        BlackHoleMoveArea.LDCornerVertice = new Vector3(-MapEdgeLength, 0f, -MapEdgeLength);
+        BlackHoleMoveArea.RTCornerVertice = new Vector3(MapEdgeLength, 0f, MapEdgeLength);
     }
 
     public void UpdateAircraftSpawnArea()
@@ -67,6 +137,7 @@ public class MapDataSO : ScriptableObject
         return;
     }
 
+
     public void UpdateStationSpawnArea()
     {
         if (StationSpawnArea.Count == 0)
@@ -102,6 +173,15 @@ public class MapDataSO : ScriptableObject
 
         return;
     }
+
+
+    [System.Serializable]
+    public struct MapScalingData
+    {
+        public float gameTime;
+        public float mapScale;
+
+    }
 }
 
 [System.Serializable]
@@ -124,4 +204,16 @@ public struct Area
         return new Vector3(Random.Range(LDCornerVertice.x, RTCornerVertice.x),
             0, Random.Range(LDCornerVertice.z, RTCornerVertice.z));
     }
+
+    public Vector3 GetCenterPointInArea()
+    {
+        return new Vector3((LDCornerVertice.x + RTCornerVertice.x) / 2f, 0f, (LDCornerVertice.z + RTCornerVertice.z) / 2f);
+    }
+
+    // Area size 指的是边长
+    public Vector3 GetAreaSize()
+    {
+        return new Vector3(Mathf.Abs(LDCornerVertice.x - RTCornerVertice.x), 0f, Mathf.Abs(LDCornerVertice.z - RTCornerVertice.z));
+    }
 }
+
