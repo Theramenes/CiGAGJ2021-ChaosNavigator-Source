@@ -58,6 +58,9 @@ public class BlackHoleController : MonoBehaviour
     {
         maxSpeed = 5 * GetCrashRadius();
 
+        if (Input.GetKey(KeyCode.LeftShift))
+            maxSpeed = 2 * maxSpeed;
+
         //Motion Handler. Only moves on axis X,Z
         float translationHorizontal = Input.GetAxis("Player" + playerNum + "Horizontal") * maxSpeed * Time.deltaTime; //Z
         float translationVertical = Input.GetAxis("Player" + playerNum + "Vertical") * maxSpeed * Time.deltaTime; //X

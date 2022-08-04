@@ -369,6 +369,7 @@ public class SpawnManager : MonoBehaviour
     private void Initialize()
     {
         MapManager = GameObject.Find("MapManager").GetComponent<MapManager>();
+        SpawnObjectsData.Initialize();
         InitGameTimer();
     }
 

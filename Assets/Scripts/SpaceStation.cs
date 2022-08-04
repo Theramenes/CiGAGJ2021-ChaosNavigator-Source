@@ -78,8 +78,8 @@ public class SpaceStation : MonoBehaviour
 
         if (isCrashed)
         {
-            if (currentScore)
-                currentScore.ApplyChange(-(stationScore.Value + holdAmount * shipScore.Value));
+            //if (currentScore)
+            //    currentScore.ApplyChange(-(stationScore.Value + holdAmount * shipScore.Value));
 
             // effect
             GameObject effect = Instantiate(Resources.Load<GameObject>("Explode Particle"), transform.position, transform.rotation);
