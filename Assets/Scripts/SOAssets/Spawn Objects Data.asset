@@ -9,6 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afde042156902ab4b9521d2a74eb2466, type: 3}
-  m_Name: ShipCrashed
+  m_Script: {fileID: 11500000, guid: e87e7422f273f4149a447f0b590bf4ad, type: 3}
+  m_Name: Spawn Objects Data
   m_EditorClassIdentifier: 
+  AircraftCount: 0
+  StationCount: 0
+  MetoerCount: 0
+  TotalCapacity: 0

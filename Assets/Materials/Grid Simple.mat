@@ -83,11 +83,11 @@ Material:
     - _Parallax: 0.02
     - _Quadify: 1
     - _Scale: 50
-    - _SecondaryFadeInSpeed: 0.46
+    - _SecondaryFadeInSpeed: 0.93
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _Thickness: 0.00189
+    - _Thickness: 0.00272
     - _UVSec: 0
     - _VertexNormals: 1
     - _VertexNormalsLength: 0.21

@@ -11,7 +11,6 @@ public class MapManager : MonoBehaviour
 
     [Header("Map Data")]
     public MapDataSO MapData;
-    public MapDataSO FinalMapData;
 
     public float curMapScale;
     [SerializeField]

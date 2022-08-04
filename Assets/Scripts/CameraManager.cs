@@ -14,6 +14,11 @@ public class CameraManager : MonoBehaviour
     private float cameraShakeTimerTotal;
     private float cameraShakeStartingAmplitude;
 
+    private void Awake()
+    {
+        Initialize();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -44,6 +49,13 @@ public class CameraManager : MonoBehaviour
         cameraShakeTimerTotal = cameraShakeTime;
         cameraShakeStartingAmplitude = cameraShakeAmplitude.Value;
 
+    }
+
+    private void Initialize()
+    {
+        cameraShakeTimer = 0f;
+        cameraShakeTimerTotal = 0f;
+        cameraShakeStartingAmplitude = 0f;
     }
 
 }

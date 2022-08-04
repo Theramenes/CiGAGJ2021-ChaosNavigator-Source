@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[CreateAssetMenu(menuName = "ScriptableObjects/Spawn Event", order = 1)]
+[CreateAssetMenu(menuName = "ScriptableObjects/Data/Spawn Event", order = 1)]
 public class SpawnEventSO : ScriptableObject
 {
     public IntReference shipType;

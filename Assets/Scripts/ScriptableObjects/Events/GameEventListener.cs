@@ -8,29 +8,26 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace RoboRyanTron.Unite2017.Events
+public class GameEventListener : MonoBehaviour
 {
-    public class GameEventListener : MonoBehaviour
+    [Tooltip("Event to register with.")]
+    public GameEvent Event;
+
+    [Tooltip("Response to invoke when Event is raised.")]
+    public UnityEvent Response;
+
+    private void OnEnable()
     {
-        [Tooltip("Event to register with.")]
-        public GameEvent Event;
+        Event.RegisterListener(this);
+    }
 
-        [Tooltip("Response to invoke when Event is raised.")]
-        public UnityEvent Response;
+    private void OnDisable()
+    {
+        Event.UnregisterListener(this);
+    }
 
-        private void OnEnable()
-        {
-            Event.RegisterListener(this);
-        }
-
-        private void OnDisable()
-        {
-            Event.UnregisterListener(this);
-        }
-
-        public void OnEventRaised()
-        {
-            Response.Invoke();
-        }
+    public void OnEventRaised()
+    {
+        Response.Invoke();
     }
 }

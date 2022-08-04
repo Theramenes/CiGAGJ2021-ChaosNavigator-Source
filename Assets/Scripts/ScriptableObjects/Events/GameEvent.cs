@@ -8,33 +8,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RoboRyanTron.Unite2017.Events
+[CreateAssetMenu(menuName = "ScriptableObjects/Game Event/Event", order = 3)]
+public class GameEvent : ScriptableObject
 {
-    [CreateAssetMenu]
-    public class GameEvent : ScriptableObject
+    /// <summary>
+    /// The list of listeners that this event will notify if it is raised.
+    /// </summary>
+    private readonly List<GameEventListener> eventListeners = 
+        new List<GameEventListener>();
+
+    public void Raise()
     {
-        /// <summary>
-        /// The list of listeners that this event will notify if it is raised.
-        /// </summary>
-        private readonly List<GameEventListener> eventListeners = 
-            new List<GameEventListener>();
+        for(int i = eventListeners.Count -1; i >= 0; i--)
+            eventListeners[i].OnEventRaised();
+    }
 
-        public void Raise()
-        {
-            for(int i = eventListeners.Count -1; i >= 0; i--)
-                eventListeners[i].OnEventRaised();
-        }
+    public void RegisterListener(GameEventListener listener)
+    {
+        if (!eventListeners.Contains(listener))
+            eventListeners.Add(listener);
+    }
 
-        public void RegisterListener(GameEventListener listener)
-        {
-            if (!eventListeners.Contains(listener))
-                eventListeners.Add(listener);
-        }
-
-        public void UnregisterListener(GameEventListener listener)
-        {
-            if (eventListeners.Contains(listener))
-                eventListeners.Remove(listener);
-        }
+    public void UnregisterListener(GameEventListener listener)
+    {
+        if (eventListeners.Contains(listener))
+            eventListeners.Remove(listener);
     }
 }

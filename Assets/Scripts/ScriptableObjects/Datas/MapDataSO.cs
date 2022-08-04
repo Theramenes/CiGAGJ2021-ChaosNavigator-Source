@@ -16,12 +16,12 @@ public class MapDataSO : ScriptableObject
     public float CameraOrthographicSize;
 
 
-    [Header("")]
-    public List<Vector2> MapVertices;
+    //[Header("")]
 
     [Header("Map Area Data")]
     [SerializeField]
     public Area BlackHoleMoveArea;
+    public Vector4 MoveAreaEdge;
 
     [SerializeField]
     public List<Area> AircraftSpawnArea;
@@ -100,6 +100,7 @@ public class MapDataSO : ScriptableObject
     {
         BlackHoleMoveArea.LDCornerVertice = new Vector3(-MapEdgeLength, 0f, -MapEdgeLength);
         BlackHoleMoveArea.RTCornerVertice = new Vector3(MapEdgeLength, 0f, MapEdgeLength);
+
     }
 
     public void UpdateAircraftSpawnArea()

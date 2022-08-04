@@ -59,42 +59,57 @@ public class BlackHoleController : MonoBehaviour
         maxSpeed = 5 * GetCrashRadius();
 
         //Motion Handler. Only moves on axis X,Z
-        float translationHorizontal = -Input.GetAxis("Player" + playerNum + "Horizontal") * maxSpeed * Time.deltaTime; //Z
+        float translationHorizontal = Input.GetAxis("Player" + playerNum + "Horizontal") * maxSpeed * Time.deltaTime; //Z
         float translationVertical = Input.GetAxis("Player" + playerNum + "Vertical") * maxSpeed * Time.deltaTime; //X
 
         //speed filter
         //if (Mathf.Abs(translationHorizontal) < controlFilter && Mathf.Abs(translationVertical) < controlFilter)
 
-        Vector3 posDelta = new Vector3(translationVertical, 0f, translationHorizontal);
+        Vector3 posDelta = new Vector3(translationHorizontal, 0f, translationVertical);
         Vector3 pos = this.transform.position;
-        Vector3 posDestination = pos + posDelta;
+        //Vector3 transformPosDelta = Camera.main.transform.TransformDirection(posDelta);
+        Vector3 transformPosDelta = Quaternion.Euler(0,Camera.main.transform.eulerAngles.y,0) * posDelta;
+        transformPosDelta.y = 0.0f;
+
+
+        //Vector3 posDestination = pos + posDelta;
+        Vector3 posDestination = pos + transformPosDelta;
 
         Vector4 edge = GameObject.Find("MapManager").GetComponent<MapManager>().getEdge();
+        float mapEdge = GameObject.Find("MapManager").GetComponent<MapManager>().MapData.MapEdgeLength;
+        
 
-        float deltaX = translationVertical;
-        float deltaZ = translationHorizontal;
+        float deltaX = transformPosDelta.x;
+        float deltaZ = transformPosDelta.z;
         
         if(!MapManager.IsBlackHoleInMoveArea(posDestination))
         {
-            
+            if (posDestination.x >= mapEdge && deltaX > 0)
+                deltaX = 0f;
+            if (posDestination.x <= -mapEdge && deltaX < 0)
+                deltaX = 0f;
+            if (posDestination.z >= mapEdge && deltaZ > 0)
+                deltaZ = 0f;
+            if (posDestination.z <= -mapEdge && deltaZ < 0)
+                deltaZ = 0f;
         }
-        if (posDestination.x + GetCrashRadius() >= edge.w && deltaX > 0)
-        {
-            deltaX = 0f;
-        }
-        if (posDestination.x - GetCrashRadius() <= edge.z && deltaX < 0)
-        {
-            deltaX = 0f;
-        }
-        if (posDestination.z + GetCrashRadius() >= edge.x && deltaZ > 0)
-        {
-            deltaZ = 0f;
+        //if (posDestination.x + GetCrashRadius() >= edge.w && deltaX > 0)
+        //{
+        //    deltaX = 0f;
+        //}
+        //if (posDestination.x - GetCrashRadius() <= edge.z && deltaX < 0)
+        //{
+        //    deltaX = 0f;
+        //}
+        //if (posDestination.z + GetCrashRadius() >= edge.x && deltaZ > 0)
+        //{
+        //    deltaZ = 0f;
 
-        }
-        if (posDestination.z - GetCrashRadius() <= edge.y && deltaZ < 0)
-        {
-            deltaZ = 0f;
-        }
+        //}
+        //if (posDestination.z - GetCrashRadius() <= edge.y && deltaZ < 0)
+        //{
+        //    deltaZ = 0f;
+        //}
 
         this.transform.position = pos + new Vector3(deltaX, 0f, deltaZ);
 

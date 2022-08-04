@@ -25,10 +25,10 @@ public class Aircraft : MonoBehaviour
 
 
     [Header("Events")]
-    public UnityEvent OnCollideWithBlackHoleEvent;
-    public UnityEvent OnShipCrashedEvent;
-    public UnityEvent OnMeteorCrashedEvent;
-    public UnityEvent OnParkInStationEvent;
+    public GameEvent OnCollideWithBlackHoleEvent;
+    public GameEvent OnShipCrashedEvent;
+    public GameEvent OnMeteorCrashedEvent;
+    public GameEvent OnParkInStationEvent;
 
     [Header("Score Info")]
     public IntVariableSO shipScore;
@@ -137,15 +137,15 @@ public class Aircraft : MonoBehaviour
         {
             if (crashTarget == "Ship")
             {
-                if (currentScore)
-                    currentScore.ApplyChange(-shipScore.Value);
-                OnShipCrashedEvent.Invoke();
+                //if (currentScore)
+                //    currentScore.ApplyChange(-shipScore.Value);
+                OnShipCrashedEvent.Raise();
             }
             else if (crashTarget == "Meteor")
             {
-                if (currentScore)
-                    currentScore.ApplyChange(-meteorScore.Value);
-                OnMeteorCrashedEvent.Invoke();
+                //if (currentScore)
+                //    currentScore.ApplyChange(-meteorScore.Value);
+                OnMeteorCrashedEvent.Raise();
             }
             PlayParticleEffect();
             Destroy(gameObject);
@@ -168,16 +168,16 @@ public class Aircraft : MonoBehaviour
         //Debug.Log("On Crashed");
         if (type == "Ship")
         {
-            if (currentScore)
-                currentScore.ApplyChange(-shipScore.Value);
+            //if (currentScore)
+            //    currentScore.ApplyChange(-shipScore.Value);
             blackHole.absorbShip(1);
         }else if (type == "Meteor")
         {
-            if (currentScore)
-                currentScore.ApplyChange(meteorScore.Value);
+            //if (currentScore)
+            //    currentScore.ApplyChange(meteorScore.Value);
             blackHole.absorbShip(meteorMassMultiple);
         }
-        OnCollideWithBlackHoleEvent.Invoke();
+        OnCollideWithBlackHoleEvent.Raise();
         isCrashed = true;
     }
 
@@ -237,7 +237,7 @@ public class Aircraft : MonoBehaviour
     {
         if (currentScore)
             currentScore.ApplyChange(shipScore.Value);
-        OnParkInStationEvent.Invoke();
+        OnParkInStationEvent.Raise();
         this.isCatched = true;
     }
 

@@ -194,7 +194,7 @@ public class SpawnManager : MonoBehaviour
         Vector3 spawnPosition;
         int spawnArea;
 
-        if (spawnEvent.shipType == 1)
+        if (spawnEvent.shipType == 1 && (SpawnObjectsData.StationCount < maxTarget))
         {
             int bhArea = MapManager.GetPointCurrentArea(blackHolePos);
             spawnArea = Random.Range((bhArea + 1) % 4, (bhArea + 3) % 4);
@@ -339,6 +339,7 @@ public class SpawnManager : MonoBehaviour
                 break;
             case 1:
                 SpawnObjectsData.StationCount += offset;
+                SpawnObjectsData.TotalCapacity += 5*offset;
                 break;
             case 2:
                 SpawnObjectsData.MetoerCount += offset;
