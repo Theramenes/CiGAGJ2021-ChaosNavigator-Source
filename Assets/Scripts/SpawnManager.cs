@@ -8,6 +8,7 @@ public class SpawnManager : MonoBehaviour
 {
     private MapManager MapManager;
 
+
     //生成事件列表
     public SpawnEventSetSO spawnEventList;
     //0:ship
@@ -19,15 +20,21 @@ public class SpawnManager : MonoBehaviour
 
     public int[] totalNum = { 0, 0, 0 };
     private float lastSpawnInterval = 0f;
+
+    [Header("Spawn Config")]
+    public SpawnConfigSO SpawnConfig;
+
     public FloatReference initSpawnInterval;
-    private float gameTimer = 0f;
+    [SerializeField]
+    private FloatVariableSO gameTimer;
 
     public IntVariableSO currentScore;
     public IntReference maxTarget;
 
+
     [Header("Spawn Objects Data")]
     public SpawnObjectsDataSO SpawnObjectsData;
-    //[SerializeField
+    //[SerializeField]
     //[SerializeField]
 
     // 用于Gizmos 记录生成点和方向
@@ -43,6 +50,10 @@ public class SpawnManager : MonoBehaviour
     private IEnumerator<Vector3> spawnPointEnumerator;
     private IEnumerator<Vector3> directionEnumerator;
 
+
+    // 是否开始游戏
+    private bool isGameStarted = false;
+
     private void Awake()
     {
         Initialize();
@@ -51,12 +62,18 @@ public class SpawnManager : MonoBehaviour
     private void Update()
     {
 
+        if (!isGameStarted)
+            return;
+
         totalNum[0] = GameObject.Find("---<< AirCrafts >>---").transform.childCount;
         totalNum[1] = GameObject.Find("---<< Stations >>---").transform.childCount;
 
-        gameTimer += Time.deltaTime;
         lastSpawnInterval += Time.deltaTime;
-        if (lastSpawnInterval > GetSpawnInterval() || IsSpawnCondition())
+
+        if (SpawnConfig.currentSpawnStage + 1 != SpawnConfig.SpawnStageTime.Length)
+            UpdateSpawnStageIndex();
+
+        if (lastSpawnInterval > SpawnConfig.GetSpawnInterval() || IsSpawnCondition())
         {
             Debug.Log("Spawn Triggered");
             Spawn();
@@ -65,10 +82,10 @@ public class SpawnManager : MonoBehaviour
     }
 
     /*重置游戏计时器*/
-    public void InitGameTimer()
-    {
-        gameTimer = 0f;
-    }
+    //public void InitGameTimer()
+    //{
+    //    gameTimer = 0f;
+    //}
 
     //碰撞管理
     public void HandleCrash(int objType)
@@ -83,19 +100,39 @@ public class SpawnManager : MonoBehaviour
         //分数维护
 
     }
-    private float GetSpawnInterval()
+
+    private void UpdateSpawnStageIndex()
     {
+        if (gameTimer.Value > SpawnConfig.SpawnStageTime[SpawnConfig.currentSpawnStage])
+            SpawnConfig.currentSpawnStage += 1;
+
+    }
+
+    //private float GetSpawnInterval()
+    //{
         
+    //    //float[] labels = { 10f, 22f, 34f, 60f };
+    //    //float[] intervals = { 5f, 3f, 3f, 2f, 1f,1f };
+    //    //int stageIndex = 0;
+    //    //for (int i = 0; i < labels.Length; i++)
+    //    //{
+    //    //    if (gameTimer.Value > labels[i]) stageIndex++;
+    //    //    else break;
+    //    //}
+    //    return intervals[SpawnConfig.currentSpawnStage];
+    //}
+    private int GetStageIndex()
+    {
         float[] labels = { 10f, 22f, 34f, 60f };
-        float[] intervals = { 5f, 3f, 3f, 2f, 1f,1f };
         int stageIndex = 0;
         for (int i = 0; i < labels.Length; i++)
         {
-            if (gameTimer > labels[i]) stageIndex++;
+            if (gameTimer.Value > labels[i]) stageIndex++;
             else break;
         }
-        return intervals[stageIndex];
+        return stageIndex;
     }
+
     private bool IsSpawnCondition()
     {
         //此时场上的条件是否满足提前生成？
@@ -118,18 +155,6 @@ public class SpawnManager : MonoBehaviour
             return 0;
         }
         return -1;
-    }
-
-    private int GetStageIndex()
-    {
-        float[] labels = { 10f, 22f, 34f, 60f };
-        int stageIndex = 0;
-        for (int i = 0; i < labels.Length; i++)
-        {
-            if (gameTimer > labels[i]) stageIndex++;
-            else break;
-        }
-        return stageIndex;
     }
 
     public List<T> Shuffle<T>(List<T> original)
@@ -172,7 +197,7 @@ public class SpawnManager : MonoBehaviour
         List<int> cardColle = new List<int>();
         for (int i = 0; i < totalEvents; i++)
         {
-            for (int j = cardSet[GetStageIndex(), i]; j > 0; j--)
+            for (int j = cardSet[SpawnConfig.currentSpawnStage, i]; j > 0; j--)
                 cardColle.Add(i);
         }
         cardColle = Shuffle<int>(cardColle);
@@ -311,7 +336,7 @@ public class SpawnManager : MonoBehaviour
 
             Aircraft newAircraft = meteorObj.GetComponent<Aircraft>();
             newAircraft.direction = new Vector3(Mathf.Cos(direction[1]), 0, Mathf.Sin(direction[1]));
-            newAircraft.origenalSpeed = (Random.Range(-0.2f, 0.2f) + 1) + speed;  //random speed
+            newAircraft.origenalSpeed = (Random.Range(-0.1f, 0.1f) + 1) + speed;  //random speed
 
             //newAircraft.top = GameObject.Find("Top").transform;
             //newAircraft.down = GameObject.Find("Down").transform;
@@ -366,11 +391,24 @@ public class SpawnManager : MonoBehaviour
         AircraftDirection.Enqueue(direction);
     }
 
+    public void ActivateSpawnManager()
+    {
+        isGameStarted = true;
+
+    }
+
     private void Initialize()
     {
         MapManager = GameObject.Find("MapManager").GetComponent<MapManager>();
         SpawnObjectsData.Initialize();
-        InitGameTimer();
+        SpawnConfig.Initialize();
+        isGameStarted = false;
+        //InitGameTimer();
+    }
+
+    public void StationCountDecrease()
+    {
+        SpawnObjectsData.StationCount --;
     }
 
     private void OnDrawGizmos()

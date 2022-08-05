@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Ship Score
   m_EditorClassIdentifier: 
   DeveloperDescription: 
-  Value: 10
+  Value: 100
   DefaultValue: 0

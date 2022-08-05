@@ -114,10 +114,24 @@ public class MapManager : MonoBehaviour
     {
         return MapData.StationSpawnArea[area].GetRandomPointInArea();
     }
+    public void ActivateMapManager()
+    {
+
+    }
 
     public float GetMapEdgeRadius()
     {
         return 2 * MapData.MapEdgeLength;
+    }
+
+    public float GetMapEdgeLength()
+    {
+        return MapData.MapEdgeLength;
+    }
+
+    public float GetMapScale()
+    {
+        return MapData.MapScale;
     }
 
     private void Initialize()

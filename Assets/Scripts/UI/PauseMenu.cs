@@ -29,7 +29,6 @@ public class PauseMenu : MonoBehaviour
     void Update()
     {
         PauseListener();
-        ShowEndScreen();
         //restart.onClick.AddListener(GameRestart);
         //exit.onClick.AddListener(Application.Quit);
     }
@@ -80,11 +79,7 @@ public class PauseMenu : MonoBehaviour
 
     public void ShowEndScreen()
     {
-        if(GameObject.Find("BlackHole").GetComponent<BlackHoleController>().absorbNum >= endThreshold)
-        {
-            endScreen.SetActive(true);
-        }
-
+        endScreen.SetActive(true);
     }
 
 }

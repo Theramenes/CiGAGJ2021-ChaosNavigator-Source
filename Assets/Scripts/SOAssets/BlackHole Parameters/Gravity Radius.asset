@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Gravity Radius
   m_EditorClassIdentifier: 
   DeveloperDescription: 
-  Value: 8.9
+  Value: 25.93
   DefaultValue: 0

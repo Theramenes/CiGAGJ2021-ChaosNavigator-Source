@@ -7,7 +7,7 @@ public class TimerManager : MonoBehaviour
 {
     [Header("Time")]
     public FloatVariableSO longestTime;
-    public float time;
+    public FloatVariableSO time;
 
     [Header("Text UI")]
     public Text timeText;
@@ -18,13 +18,9 @@ public class TimerManager : MonoBehaviour
 
     private void Start()
     {
-        StartTimer();
+
     }
 
-    public void StartTimer()
-    {
-        StartCoroutine("Timer");
-    }
 
     public void StopTimer()
     {
@@ -33,19 +29,23 @@ public class TimerManager : MonoBehaviour
 
     private void UpdateTimeRecord()
     {
-        longestTime.SetValue((time > longestTime.Value) ? 
-            time : longestTime.Value); 
+        longestTime.SetValue((time.Value > longestTime.Value) ? 
+            time.Value : longestTime.Value); 
     }
 
+    public void ActivateTimer()
+    {
+
+        StartCoroutine("Timer");
+    }
 
     IEnumerator Timer()
     {
         while (true)
         {
-            time += Time.deltaTime;
-            msec = (int)((time - (int)time) * 100);
-            sec = (int)(time % 60);
-            min = (int)(time / 60 % 60);
+            msec = (int)((time.Value - (int)time.Value) * 100);
+            sec = (int)(time.Value % 60);
+            min = (int)(time.Value / 60 % 60);
 
             timeText.text = string.Format("{0:00}:{1:00}:{2:00}",
                 min, sec, msec);

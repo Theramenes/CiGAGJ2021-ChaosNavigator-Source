@@ -30,6 +30,9 @@ public class BlackHoleController : MonoBehaviour
     //which player? which input?
     public int playerNum = 1;
 
+    // 游戏是否开始
+    private bool isGameStart;
+
     private void Awake()
     {
         Initialize();   
@@ -56,6 +59,9 @@ public class BlackHoleController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!isGameStart)
+            return;
+
         maxSpeed = 5 * GetCrashRadius();
 
         if (Input.GetKey(KeyCode.LeftShift))
@@ -87,13 +93,13 @@ public class BlackHoleController : MonoBehaviour
         
         if(!MapManager.IsBlackHoleInMoveArea(posDestination))
         {
-            if (posDestination.x >= mapEdge && deltaX > 0)
+            if (posDestination.x + GetCrashRadius() >= mapEdge && deltaX > 0)
                 deltaX = 0f;
-            if (posDestination.x <= -mapEdge && deltaX < 0)
+            if (posDestination.x - GetCrashRadius() <= -mapEdge && deltaX < 0)
                 deltaX = 0f;
-            if (posDestination.z >= mapEdge && deltaZ > 0)
+            if (posDestination.z + GetCrashRadius() >= mapEdge && deltaZ > 0)
                 deltaZ = 0f;
-            if (posDestination.z <= -mapEdge && deltaZ < 0)
+            if (posDestination.z - GetCrashRadius() <= -mapEdge && deltaZ < 0)
                 deltaZ = 0f;
         }
         //if (posDestination.x + GetCrashRadius() >= edge.w && deltaX > 0)
@@ -210,6 +216,16 @@ public class BlackHoleController : MonoBehaviour
         return crashRadius + crashRadiusRate * absorbNum * gravAcceIncresePerShip;
     }
 
+    public bool IsGameEndCondition(float mapEdgeLength)
+    {
+        return 1.5f * mapEdgeLength < outerRing.transform.localScale.x ? true : false;
+    }
+
+    public void ActivateBHController()
+    {
+        isGameStart = true;
+    }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.blue;
@@ -222,5 +238,9 @@ public class BlackHoleController : MonoBehaviour
     private void Initialize()
     {
         MapManager = GameObject.Find("MapManager").GetComponent<MapManager>();
+        isGameStart = false;
     }
+
+    //private
+
 }

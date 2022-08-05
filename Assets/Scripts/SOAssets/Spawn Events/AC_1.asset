@@ -26,7 +26,7 @@ MonoBehaviour:
     Variable: {fileID: 0}
   speed:
     UseConstant: 1
-    ConstantValue: 0.5
+    ConstantValue: 1
     Variable: {fileID: 0}
   initPos:
   - UseConstant: 1

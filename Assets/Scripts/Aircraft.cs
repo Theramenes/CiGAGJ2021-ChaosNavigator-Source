@@ -188,11 +188,12 @@ public class Aircraft : MonoBehaviour
         float mapEdgeRadius = GameObject.Find("MapManager").GetComponent<MapManager>().GetMapEdgeRadius();
         float distanceAircraftToOrigin = Vector3.Distance(pos, new Vector3(0, 0, 0));
 
+        float randomOffset = Random.Range(0,2f);
+
         TrailRenderer tr = this.GetComponentInChildren<TrailRenderer>();
         if (tr.enabled == false) { tr.enabled = true; }
 
-
-        if (distanceAircraftToOrigin >= mapEdgeRadius)
+        if (distanceAircraftToOrigin > mapEdgeRadius + randomOffset)
         {
             if(isJustSpawned)
             {

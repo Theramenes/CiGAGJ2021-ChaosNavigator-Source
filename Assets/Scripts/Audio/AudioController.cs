@@ -24,7 +24,7 @@ public class AudioController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        PlayNormalBGM();
+
     }
 
     // Update is called once per frame
@@ -44,28 +44,33 @@ public class AudioController : MonoBehaviour
         
     }
 
+    private void BGMSlowDown()
+    {
+
+    }
+
     private void BGMSpeedUP()
     {
         if (GameObject.Find("BlackHole").GetComponent<BlackHoleController>().absorbNum >= speedUpThreshold)
         {
             isSpeeding = true;
-            StartCoroutine("SpeedUpBGM");
+            //StartCoroutine(BGMPitchTunning());
         }
     }
 
-    IEnumerator SpeedUpBGM()
+    IEnumerator BGMPitchTunning(float targetPitch)
     {
         float timeElapsed = 0;
 
         while (timeElapsed < speedUpDuration)
         {
-            audioSource.pitch = Mathf.Lerp(1f, maxPitch, timeElapsed / speedUpDuration);
+            audioSource.pitch = Mathf.Lerp(1f, targetPitch, timeElapsed / speedUpDuration);
             timeElapsed += Time.deltaTime;
 
             yield return null;
         }
 
-        audioSource.pitch = maxPitch;
+        audioSource.pitch = targetPitch;
         
     }
 

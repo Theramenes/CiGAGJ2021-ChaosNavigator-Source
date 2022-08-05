@@ -30,13 +30,13 @@ MonoBehaviour:
     Variable: {fileID: 0}
   initPos:
   - UseConstant: 1
-    ConstantValue: {x: 0, y: 0, z: 0}
+    ConstantValue: {x: 1, y: 0, z: 0}
     Variable: {fileID: 0}
   - UseConstant: 1
-    ConstantValue: {x: 0, y: 0, z: 0}
+    ConstantValue: {x: 0, y: 0, z: -1}
     Variable: {fileID: 0}
   - UseConstant: 1
-    ConstantValue: {x: 0, y: 0, z: 0}
+    ConstantValue: {x: -1, y: 0, z: 0}
     Variable: {fileID: 0}
   initDirections:
   - UseConstant: 1

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class LerpEnumerator 
 {
-
     public IEnumerator Vector3CurveLerp(System.Action<Vector3> variable,Vector3 origin, Vector3 targetVec, AnimationCurve curve, float duration)
     {
         float journey = 0f;

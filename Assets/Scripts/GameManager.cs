@@ -6,37 +6,61 @@ public class GameManager : MonoBehaviour
 {
 
     public int gameState;
+    
+    [Header("Core Game Components")]
     public SpawnManager SpawnManager;
     public MapManager MapManager;
+    public BlackHoleController BHController;
+    public StartCountdownController countdownController;
 
-    public float gameTime;
+    public FloatVariableSO gameTime;
     public float timeScaleRate;
     public int stateTimeClip;
 
     public float maxTime;
 
+    private bool isGameStart;
+
+    [Header("Events")]
+    public GameEvent GameEnd;
+
     // Start is called before the first frame update
     void Start()
     {
         Initialize();
-        gameTime = 0f;
+        countdownController.ActivateStarCountdown();
     }
 
     // Update is called once per frame
     void Update()
     {
-        gameTime += Time.deltaTime;
+        if (!isGameStart)
+            return;
 
-        MapManager.DoMapScale(gameTime);
+        gameTime.ApplyChange(Time.deltaTime);
+        MapManager.DoMapScale(gameTime.Value);
+        CheckEndGame();
 
         //if (gameTime < maxTime)
         //    MapManager.GetComponent<MapManger>().setTargetScale(1 + timeScaleRate * ((int)gameTime) / stateTimeClip);
     }
 
+    private void CheckEndGame()
+    {
+        if (BHController.IsGameEndCondition(MapManager.GetMapEdgeLength()))
+            GameEnd.Raise();
+    }
+
+    public void StartGameSession()
+    {
+        isGameStart = true;
+        BHController.ActivateBHController();
+        SpawnManager.ActivateSpawnManager();
+    }
+
     private void Initialize()
     {
-        gameTime = 0f;
-
-
+        gameTime.SetDefaultValue();
+        isGameStart = false;
     }
 }

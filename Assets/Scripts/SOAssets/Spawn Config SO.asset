@@ -9,9 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d21b5387dfedfa945a0301ed1a5318ec, type: 3}
-  m_Name: Gravity Radius Rate
+  m_Script: {fileID: 11500000, guid: 8601cfb6d2055b64788424952fde53b6, type: 3}
+  m_Name: Spawn Config SO
   m_EditorClassIdentifier: 
-  DeveloperDescription: 
-  Value: 0.2
-  DefaultValue: 0
+  SpawnStageTime:
+  - 15
+  - 30
+  - 45
+  - 80
+  - 120
+  SpawnInterval:
+  - 4
+  - 3
+  - 2
+  - 1
+  - 1
+  currentSpawnStage: 3
